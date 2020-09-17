@@ -1,6 +1,9 @@
 const posModel = require('../model/posModel');
 const posRes = require('../helper/posRes');
 const { success, failed, successMeta } = posRes;
+const upload = require('../helper/upload')
+const redis = require('redis')
+const redisClient = redis.createClient()
 
 const posCont = {
     findAll: (req, res) => {
@@ -16,14 +19,21 @@ const posCont = {
                 const totalRow = result[0].count
                 const meta = {
                     totalRow,
-                    totalPage: Math.ceil(totalRow/dblimit),
+                    totalPage: Math.ceil(totalRow / dblimit),
                     page
                 }
                 successMeta(res, result, meta, 'Get all data success');
-                // success(res, result, 'Get all data success'); 
             }).catch(err => {
                 failed(res, [], err.message);
             })
+        
+        posModel.getRedis()
+        .then(resredis => {
+            const dataRes = JSON.stringify(resredis)
+            redisClient.set('dataproduct', dataRes)
+        }).catch(err => {
+            failed(res, [], 'err set redis');
+        })
     },
     findOne: (req, res) => {
         const id = req.params.id;
@@ -35,19 +45,30 @@ const posCont = {
             })
     },
     insertOne: (req, res) => {
-        const data = req.body
-        data.image = req.file.filename
-        posModel.insertOne(data)
-            .then(result => {
-                success(res, result, 'Insert data success');
-            }).catch(err => {
-                failed(res, [], err.message);
-            })
+        upload.single('image')(req, res, (err) => {
+            if (err) {
+                if(err.message === "File too large") {
+                    failed(res, [], 'Ukuran File terlalu besar')
+                }
+                failed(res, [], err);
+            } else {
+                const data = req.body
+                data.image = req.file.filename
+                posModel.insertOne(data)
+                    .then(result => {
+                        redisClient.del('dataproduct')
+                        success(res, result, 'Insert data success');
+                    }).catch(err => {
+                        failed(res, [], err.message);
+                    })
+            }
+        })
     },
     deleteOne: (req, res) => {
         const id = req.params.id;
         posModel.deleteOne(id)
             .then(result => {
+                redisClient.del('dataproduct')
                 success(res, result, 'Delete data success');
             }).catch(err => {
                 failed(res, [], err.message);
@@ -59,6 +80,7 @@ const posCont = {
         data.image = req.file.filename
         posModel.updateOne(data, id)
             .then(result => {
+                redisClient.del('dataproduct')
                 success(res, result, 'Update data success');
             }).catch(err => {
                 failed(res, [], err.message);
@@ -67,9 +89,10 @@ const posCont = {
     updateDetail: (req, res) => {
         const id = req.params.id;
         const data = req.body
-        data.image = !req.file ? '': req.file.filename
+        data.image = !req.file ? '' : req.file.filename
         posModel.updateDetail(data, id)
             .then(result => {
+                redisClient.del('dataproduct')
                 success(res, result, 'Update data success');
             }).catch(err => {
                 failed(res, [], err.message);

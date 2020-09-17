@@ -16,6 +16,18 @@ const posModel = {
             })
         })
     },
+    getRedis: () => {
+        return new Promise((resolve, reject) => {
+            db.query(`SELECT id, image, product_name, price, category, (SELECT COUNT(*) FROM Produk) AS count 
+            FROM Produk LEFT JOIN Category ON Produk.id_category=Category.id_category`, (err, res) => {
+                if(err) {
+                    reject(new Error(err));
+                }else {
+                    resolve(res);
+                }
+            })
+        })
+    },
     findOne: (id) => {
         return new Promise((resolve, reject) => {
             db.query(`SELECT * FROM Produk WHERE id ='${id}'`, (err, res) => {

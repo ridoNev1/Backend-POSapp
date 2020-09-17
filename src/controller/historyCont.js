@@ -15,7 +15,16 @@ const historyCont = {
         const data = req.body
         historyModel.insertOne(data)
             .then(result => {
-                success(res, result, 'Insert data success');
+                const detail = req.body.detail
+                const masterId = result.insertId
+                const insertDetail = detail.map(e => {
+                    historyModel.insertDetail(masterId, e)
+                })
+                Promise.all(insertDetail).then(() => {
+                    success(res, result, 'Insert transaksi success');
+                }).catch(err => {
+                    failed(res, [], err.message);
+                })
             }).catch(err => {
                 failed(res, [], err.message);
             })

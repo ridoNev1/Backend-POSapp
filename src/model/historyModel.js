@@ -14,8 +14,20 @@ const historyModel = {
     },
     insertOne: (data) => {
         return new Promise((resolve, reject) => {
-            db.query(`INSERT INTO History (invoices, cashier, date, orders, amount)
-             VALUES ('${data.invoices}', '${data.cashier}', '${data.date}', '${data.orders}', '${data.amount}')`, (err, res) => {
+            db.query(`INSERT INTO History (invoices, cashier, amount)
+             VALUES ('${data.invoices}', '${data.cashier}', '${data.amount}')`, (err, res) => {
+                 if(err) {
+                     reject(new Error(err));
+                 }else {
+                     resolve(res);
+                 }
+             })
+        })
+    },
+    insertDetail: (masterId, data) => {
+        return new Promise((resolve, reject) => {
+            db.query(`INSERT INTO historydetail (id_history, id_product, product_name, qty, price)
+             VALUES ('${masterId}', '${data.id_product}', '${data.product_name}', '${data.qty}', '${data.price}')`, (err, res) => {
                  if(err) {
                      reject(new Error(err));
                  }else {
