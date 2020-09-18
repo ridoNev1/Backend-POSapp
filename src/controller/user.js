@@ -37,7 +37,7 @@ const users = {
 
           let registerEmail = `<div>
           <p>Follow link for activation</p>
-          <a href="http://localhost:3000/pos/users/actived/${res}">click</a>
+          <a href="${env.URL}/pos/users/actived/${res}">click</a>
           </div>`
           transporter.sendMail({
             from: `👻 ${env.EMAIL}`, // sender address
@@ -50,7 +50,7 @@ const users = {
     )
     user.register(data)
       .then(result => {
-        success(res, result, 'Insert user success');
+        success(res, result, 'Insert user success & need activation');
       }).catch(err => {
         failed(res, [], err.message);
       })

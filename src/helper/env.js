@@ -9,7 +9,8 @@ const env = {
     PRIVATKEY: process.env.PRIVATEKEY,
     REFRESHTOKEN: process.env.REFRESHTOKEN,
     EMAIL: process.env.EMAIL,
-    EMAIL_PASS: process.env.EMAIL_PASS
+    EMAIL_PASS: process.env.EMAIL_PASS,
+    URL: process.env.URL
 }
 
 module.exports = env;
