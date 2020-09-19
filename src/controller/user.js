@@ -106,7 +106,8 @@ const users = {
     const token = req.body.token
     jwt.verify(token, REFRESHTOKEN, (err, result) => {
       const refresh = generateToken({
-        email: result.email
+        email: result.email,
+        level: result.level
       })
       res.json({ newToken: refresh })
     })

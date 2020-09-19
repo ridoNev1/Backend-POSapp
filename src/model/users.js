@@ -48,7 +48,7 @@ const user = {
   },
   logout: (id) => {
     return new Promise((resolve, reject) => {
-      db.query(`UPDATE users SET refreshtoken=null WHERE id='${id}'`, id, (err, res) => {
+      db.query(`UPDATE users SET refreshtoken=null WHERE id='${id}'`, (err, res) => {
         if(err) {
           reject(new Error(err))
         }else {
