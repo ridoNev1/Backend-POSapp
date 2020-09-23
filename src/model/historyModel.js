@@ -3,7 +3,7 @@ const db = require('../config/db');
 const historyModel = {
     findAll: () => {
         return new Promise((resolve, reject) => {
-            db.query(`SELECT * FROM History`, (err, res) => {
+            db.query(`SELECT * FROM History JOIN historydetail ON History.id=historydetail.id_history`, (err, res) => {
                 if(err) {
                     reject(new Error(err));
                 }else {
