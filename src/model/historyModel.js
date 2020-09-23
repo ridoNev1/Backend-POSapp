@@ -12,6 +12,17 @@ const historyModel = {
             })
         })
     },
+    findHistory: () => {
+        return new Promise((resolve, reject) => {
+            db.query(`SELECT * FROM History`, (err, res) => {
+                if(err) {
+                    reject(new Error(err));
+                }else {
+                    resolve(res);
+                }
+            })
+        })
+    },
     insertOne: (data) => {
         return new Promise((resolve, reject) => {
             db.query(`INSERT INTO History (invoices, cashier, amount)

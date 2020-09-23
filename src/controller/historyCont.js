@@ -11,6 +11,14 @@ const historyCont = {
                 failed(res, [], err.message);
             })
     },
+    findHistory: (req, res) => {
+        historyModel.findHistory()
+            .then(result => {
+                success(res, result, 'Get all data success');
+            }).catch(err => {
+                failed(res, [], err.message);
+            })
+    },
     insertOne: (req, res) => {
         const data = req.body
         historyModel.insertOne(data)

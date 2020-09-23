@@ -6,6 +6,7 @@ const { authentication, authorization, admin } = require('../helper/auth')
 
 routes
   .get('/find', authentication, authorization, historyCont.findAll)
+  .get('/findhistory', authentication, authorization, historyCont.findHistory)
   .post('/insert', authentication, authorization, historyCont.insertOne)
   .delete('/delete/:id', authentication, authorization, admin, historyCont.deleteOne)
   .put('/update/:id', authentication, authorization, admin, historyCont.updateOne)
